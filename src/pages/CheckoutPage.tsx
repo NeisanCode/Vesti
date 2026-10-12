@@ -22,7 +22,7 @@ export function CheckoutPage({ cart }: CheckoutPageProps) {
           <Check size={30} />
         </div>
         <p className="eyebrow mt-7">Payment initiated</p>
-        <h1 className="mt-3 font-serif text-4xl tracking-[-0.05em]">
+        <h1 className="mt-3 font-serif text-4xl tracking-tighter">
           Confirm the payment on your phone.
         </h1>
         <p className="mt-4 text-sm leading-6 text-stone-600">
@@ -41,7 +41,7 @@ export function CheckoutPage({ cart }: CheckoutPageProps) {
 
   return (
     <section className="bg-[#f7f5f2]">
-      <div className="mx-auto grid max-w-[1240px] gap-12 px-5 py-12 lg:grid-cols-[1.1fr_.8fr] lg:gap-24 lg:px-10 lg:py-18">
+      <div className="mx-auto grid max-w-310 gap-12 px-5 py-12 lg:grid-cols-[1.1fr_.8fr] lg:gap-24 lg:px-10 lg:py-18">
         <div>
           <Link
             className="mb-8 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.13em] text-stone-600"
@@ -50,7 +50,7 @@ export function CheckoutPage({ cart }: CheckoutPageProps) {
             <ChevronLeft size={15} /> Continue shopping
           </Link>
           <p className="eyebrow">Secure checkout</p>
-          <h1 className="mt-3 font-serif text-4xl tracking-[-0.05em]">
+          <h1 className="mt-3 font-serif text-4xl tracking-tighter">
             Almost yours.
           </h1>
           <form

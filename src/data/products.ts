@@ -59,7 +59,8 @@ export const products: Product[] = [
     category: "Accessories",
     price: 158,
     color: "Cognac",
-    image: "https://images.unsplash.com/photo-1624687943971-e86af76d57de?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
+    image:
+      "https://images.unsplash.com/photo-1624687943971-e86af76d57de?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
     alt: "Tan leather bag",
   },
   {

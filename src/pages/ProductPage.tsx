@@ -33,7 +33,7 @@ export function ProductPage({ addToCart }: ProductPageProps) {
     ["Chestnut", "bg-[#875b37]"],
   ];
   return (
-    <div className="mx-auto max-w-[1440px] px-5 py-6 lg:px-10 lg:py-9">
+    <div className="mx-auto max-w-360 px-5 py-6 lg:px-10 lg:py-9">
       <div className="mb-6 flex gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
         <Link to="/">Home</Link>
         <span>/</span>
@@ -52,7 +52,7 @@ export function ProductPage({ addToCart }: ProductPageProps) {
           </div>
           <div className="relative aspect-[.76] overflow-hidden bg-stone-100">
             <img
-              className="h-full w-full object-cover grayscale-[18%]"
+              className="h-full w-full object-cover grayscale-18"
               src="https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=900&q=85"
               alt="Product style detail"
             />
@@ -63,7 +63,7 @@ export function ProductPage({ addToCart }: ProductPageProps) {
         </div>
         <div className="lg:sticky lg:top-28 lg:h-fit">
           <p className="eyebrow">{product.category}</p>
-          <h1 className="mt-3 font-serif text-4xl tracking-[-0.05em] sm:text-5xl">
+          <h1 className="mt-3 font-serif text-4xl tracking-tighter sm:text-5xl">
             {product.name}
           </h1>
           <p className="mt-4 text-lg">{money(product.price)}</p>
