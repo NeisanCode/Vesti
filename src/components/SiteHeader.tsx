@@ -1,0 +1,11 @@
+import { useState } from "react";
+import { Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+
+type SiteHeaderProps = { cartCount: number; onOpenCart: () => void };
+
+export function SiteHeader({ cartCount, onOpenCart }: SiteHeaderProps) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const links = [["Home", "/"], ["Shop", "/shop"], ["Our story", "/#story"]];
+  return <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-[#faf9f7]/95 backdrop-blur"><div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-5 lg:px-10"><Link className="font-serif text-[27px] font-semibold tracking-[-0.07em] text-stone-950" to="/">VÉSTI<span className="text-[#ae4d32]">.</span></Link><nav className="hidden items-center gap-9 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 md:flex">{links.map(([label, href]) => <NavLink key={href} className={({ isActive }) => `transition-colors hover:text-stone-950 ${isActive && href === "/" ? "text-stone-950" : ""}`} to={href}>{label}</NavLink>)}</nav><div className="flex items-center gap-1.5"><button className="icon-button hidden sm:grid" aria-label="Search"><Search size={18} strokeWidth={1.7} /></button><button className="icon-button hidden sm:grid" aria-label="Saved items"><Heart size={18} strokeWidth={1.7} /></button><button className="icon-button relative grid" onClick={onOpenCart} aria-label="Open shopping bag"><ShoppingBag size={18} strokeWidth={1.7} />{cartCount > 0 && <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ae4d32] px-1 text-[9px] font-bold text-white">{cartCount}</span>}</button><button className="icon-button grid md:hidden" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle navigation">{mobileOpen ? <X size={20} /> : <Menu size={20} />}</button></div></div>{mobileOpen && <nav className="border-t border-stone-200 bg-[#faf9f7] px-5 py-5 md:hidden"><div className="flex flex-col gap-4 text-xs font-bold uppercase tracking-[0.14em]">{links.map(([label, href]) => <NavLink key={href} to={href} onClick={() => setMobileOpen(false)}>{label}</NavLink>)}</div></nav>}</header>;
+}
