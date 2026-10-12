@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Check, ChevronLeft, Smartphone, Truck } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ChevronLeft, Smartphone, Truck } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { FormSection } from "../components/FormSection";
 import { products } from "../data/products";
@@ -10,34 +9,10 @@ import type { Product } from "../types/product";
 type CheckoutPageProps = { cart: Product[] };
 
 export function CheckoutPage({ cart }: CheckoutPageProps) {
-  const [complete, setComplete] = useState(false);
+  const navigate = useNavigate();
   const items = cart.length ? cart : [products[0], products[3]];
   const subtotal = items.reduce((total, product) => total + product.price, 0);
   const shipping = subtotal >= 150 ? 0 : 12;
-
-  if (complete) {
-    return (
-      <section className="mx-auto flex min-h-[68vh] max-w-xl flex-col items-center justify-center px-5 text-center">
-        <div className="grid h-16 w-16 place-items-center rounded-full bg-[#e7e1db]">
-          <Check size={30} />
-        </div>
-        <p className="eyebrow mt-7">Payment initiated</p>
-        <h1 className="mt-3 font-serif text-4xl tracking-tighter">
-          Confirm the payment on your phone.
-        </h1>
-        <p className="mt-4 text-sm leading-6 text-stone-600">
-          Your mobile-money payment request has been created. Follow the prompt
-          from your provider to complete it.
-        </p>
-        <Link
-          className="mt-8 bg-stone-950 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-white"
-          to="/shop"
-        >
-          Keep shopping
-        </Link>
-      </section>
-    );
-  }
 
   return (
     <section className="bg-[#f7f5f2]">
@@ -57,7 +32,9 @@ export function CheckoutPage({ cart }: CheckoutPageProps) {
             className="mt-10"
             onSubmit={(event) => {
               event.preventDefault();
-              setComplete(true);
+              navigate("/payment-success", {
+                state: { total: subtotal + shipping },
+              });
             }}
           >
             <FormSection title="Mobile Money payment">

@@ -6,6 +6,7 @@ import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
 import { CheckoutPage } from "./pages/CheckoutPage";
 import { HomePage } from "./pages/HomePage";
+import { PaymentSuccessPage } from "./pages/PaymentSuccessPage";
 import { ProductPage } from "./pages/ProductPage";
 import { ShopPage } from "./pages/ShopPage";
 import type { Product } from "./types/product";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/shop" element={<ShopPage addToCart={addToCart} />} />
           <Route path="/product/:id" element={<ProductPage addToCart={addToCart} />} />
           <Route path="/checkout" element={<CheckoutPage cart={cart} />} />
+          <Route path="/payment-success" element={<PaymentSuccessPage />} />
         </Routes>
       </main>
       <SiteFooter />
