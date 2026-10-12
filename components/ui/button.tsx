@@ -54,4 +54,6 @@ function Button({
   )
 }
 
+// Shared with composition helpers that need to match the Button's shadcn variants.
+// eslint-disable-next-line react-refresh/only-export-components
 export { Button, buttonVariants }
