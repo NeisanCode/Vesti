@@ -1,4 +1,3 @@
-# pnpm-workspace.yaml
 allowBuilds:
   '@parcel/watcher': false
-  esbuild: true
+  esbuild: false
