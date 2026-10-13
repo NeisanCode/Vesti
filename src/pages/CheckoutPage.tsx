@@ -1,18 +1,101 @@
 import { ChevronLeft, Smartphone, Truck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useState, type FormEvent } from "react";
 import { Button } from "../../components/ui/button";
 import { FormSection } from "../components/FormSection";
 import { products } from "../data/products";
 import { money } from "../lib/money";
 import type { Product } from "../types/product";
+import type { PaymentErrorResponse, Provider,  PaymentSuccessResponse } from "../types/api";
 
 type CheckoutPageProps = { cart: Product[] };
 
+function getPaymentError(payload: unknown) {
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "message" in payload &&
+    typeof (payload as PaymentErrorResponse).message === "string"
+  ) {
+    return (payload as PaymentErrorResponse).message;
+  }
+
+  return "Payment could not be completed. Please try again.";
+}
+
 export function CheckoutPage({ cart }: CheckoutPageProps) {
   const navigate = useNavigate();
+  const [paymentError, setPaymentError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const items = cart.length ? cart : [products[0], products[3]];
   const subtotal = items.reduce((total, product) => total + product.price, 0);
   const shipping = subtotal >= 150 ? 0 : 12;
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPaymentError("");
+    setIsLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const paymentPhoneNumber = String(formData.get("payment_phone_number") ?? "");
+    const provider = String(formData.get("provider") ?? "") as Provider;
+
+    try {
+      // The serverless function owns the payment amount and provider secrets.
+      const response = await fetch("/api/payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          payment_phone_number: paymentPhoneNumber,
+          provider,
+          // Replace with the signed-in customer's ID when authentication is added.
+          customer_external_id: "42",
+        }),
+      });
+
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!contentType.includes("application/json")) {
+        throw new Error(
+          "The payment API is unavailable. Start the app with `pnpm dev:vercel` or deploy it to Vercel."
+        );
+      }
+
+      const payload: PaymentSuccessResponse | PaymentErrorResponse =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(getPaymentError(payload));
+      }
+
+      const data = payload as PaymentSuccessResponse;
+
+      if (!data.status || !data.amount) {
+        throw new Error("The payment API returned an invalid response. Please try again.");
+      }
+
+      if (data.status === "failed") {
+        throw new Error(data.message || "Payment could not be completed. Please try again.");
+      }
+
+      navigate("/payment-success", {
+        state: {
+          total: Number(data.amount),
+          reference: data.reference,
+          message: data.message,
+          status: data.status,
+        },
+      });
+    } catch (error: unknown) {
+      setPaymentError(
+        error instanceof Error
+          ? error.message
+          : "Payment could not be completed. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <section className="bg-[#f7f5f2]">
@@ -28,15 +111,7 @@ export function CheckoutPage({ cart }: CheckoutPageProps) {
           <h1 className="mt-3 font-serif text-4xl tracking-tighter">
             Almost yours.
           </h1>
-          <form
-            className="mt-10"
-            onSubmit={(event) => {
-              event.preventDefault();
-              navigate("/payment-success", {
-                state: { total: subtotal + shipping },
-              });
-            }}
-          >
+          <form className="mt-10" onSubmit={handleSubmit}>
             <FormSection title="Mobile Money payment">
               <div className="rounded-sm border border-stone-900 bg-white">
                 <div className="flex items-center gap-3 border-b border-stone-200 px-4 py-4">
@@ -81,14 +156,23 @@ export function CheckoutPage({ cart }: CheckoutPageProps) {
                 242066203420.
               </p>
             </FormSection>
+
+            {paymentError && (
+              <p className="mt-4 text-sm text-red-700" role="alert">
+                {paymentError}
+              </p>
+            )}
+
             <Button
               type="submit"
-              className="mt-8 h-14 w-full rounded-none bg-stone-950 text-[10px] uppercase tracking-[0.16em] hover:bg-[#ae4d32]"
+              disabled={isLoading}
+              className="mt-8 h-14 w-full rounded-none bg-stone-950 text-[10px] uppercase tracking-[0.16em] hover:bg-[#ae4d32] disabled:opacity-60"
             >
-              Pay with Mobile Money
+              {isLoading ? "Processing..." : "Pay with Mobile Money"}
             </Button>
           </form>
         </div>
+
         <aside className="h-fit bg-white p-6 lg:sticky lg:top-28 lg:p-8">
           <h2 className="font-serif text-2xl tracking-[-0.04em]">
             Order summary
