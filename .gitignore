@@ -27,3 +27,5 @@ image
 *.sln
 *.sw?
 AGENTS.md
+.vercel
+.env*
